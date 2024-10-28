@@ -17,7 +17,7 @@
 .movie-details {
   flex-grow: 1;
   color: #333;
-  font-size: 1.2em;
+  font-size: 1em;
 }
 
 .movie-actions {
@@ -33,7 +33,7 @@
   padding: 8px 12px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 0.8em;
 }
 
 .remove-button {
@@ -43,7 +43,7 @@
   padding: 8px 12px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 0.8em;
 }
 
 .remove-button:hover {
@@ -78,9 +78,11 @@
   display: block;
   margin: 10px 0;
   padding: 8px;
+  padding-top: 5px;
+  padding-bottom: 50px;
   width: 100%;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: #e0f7fa;
   color: black;
 }
