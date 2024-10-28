@@ -23,7 +23,7 @@ app.use(express.static(path.join(path.resolve(), 'dist')));
 
 // Default movies to reset the table with
 const defaultMovies = [
-    { name: 'Dancing with the wolves', year: 1994 },
+    { name: 'Dancing with the Wolves', year: 1994 },
     { name: 'Demolition Man', year: 1997 },
     { name: 'Casino', year: 1997 },
 ];
@@ -32,20 +32,25 @@ const defaultMovies = [
 const resetMoviesTable = async () => {
     try {
         await client.query('DELETE FROM movies'); // Clear existing data
+
         for (const movie of defaultMovies) {
             await client.query(
                 'INSERT INTO movies (name, year) VALUES ($1, $2)',
                 [movie.name, movie.year]
             );
         }
-        console.log('Movies table reset to default values.');
+
+        // Reset the sequence for the ID column to start from 1
+        await client.query('SELECT setval(pg_get_serial_sequence(\'movies\', \'id\'), COALESCE(MAX(id), 0) + 1) FROM movies');
+
+        console.log('Movies table reset to default values with IDs starting from 1.');
     } catch (error) {
         console.error('Error resetting movies table:', error);
     }
 };
 
 // Schedule the reset to run every 5 minutes
-cron.schedule('*/5 * * * *', resetMoviesTable);
+cron.schedule('*/5 * * * *', resetMoviesTable); // Changed to run every 5 minutes
 
 // GET route to fetch all movies
 app.get('/api', async (request, response) => {
