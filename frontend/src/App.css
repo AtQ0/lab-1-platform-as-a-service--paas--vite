@@ -4,6 +4,10 @@
   border-radius: 8px;
   margin: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  height: 300px;
+  /* Set a constant height for the container */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
 }
 
 .movie-item {
@@ -107,29 +111,8 @@
   border: none;
   color: black;
   font-size: 1em;
-  cursor: pointer;
 }
 
 h2 {
   color: black;
-}
-
-.add-movie {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px;
-  /* Optional margin for spacing */
-}
-
-.add-movie h2 {
-  margin-bottom: 10px;
-  /* Optional margin for spacing below the headline */
-}
-
-.add-movie input {
-  width: 300px;
-  /* Fixed width for input fields */
-  margin: 5px 0;
-  /* Margin between input fields */
 }
