@@ -121,9 +121,9 @@ function App() {
         )}
       </div>
 
-      {/* Input fields and button to add or update a movie */}
+      {/* Input fields and button to add a new movie */}
       <div className="add-movie">
-        <h2>{editMovieId ? 'Edit Movie' : 'Add New Movie'}</h2>
+        <h2>Add New Movie</h2>
         <input
           type="text"
           placeholder="Movie Name"
@@ -136,10 +136,29 @@ function App() {
           value={newMovieYear}
           onChange={(e) => setNewMovieYear(e.target.value)}
         />
-        <button onClick={editMovieId ? saveEditedMovie : addNewMovie}>
-          {editMovieId ? 'Save Changes' : 'Add Movie'}
-        </button>
+        <button onClick={addNewMovie}>Add Movie</button>
       </div>
+
+      {/* Edit Movie Modal */}
+      {editMovieId && (
+        <div className="edit-movie-modal">
+          <h2>Edit Movie</h2>
+          <input
+            type="text"
+            placeholder="Movie Name"
+            value={newMovieName}
+            onChange={(e) => setNewMovieName(e.target.value)}
+          />
+          <input
+            type="number"
+            placeholder="Year"
+            value={newMovieYear}
+            onChange={(e) => setNewMovieYear(e.target.value)}
+          />
+          <button onClick={saveEditedMovie}>Save Changes</button>
+          <button onClick={() => setEditMovieId(null)}>Cancel</button>
+        </div>
+      )}
     </>
   );
 }
