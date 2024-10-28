@@ -136,7 +136,7 @@ function App() {
       {editMovieId && (
         <div className="edit-movie-modal">
           <button className="close-button" onClick={() => setEditMovieId(null)}>X</button>
-          <h2>Edit Movie</h2>
+          <h3 className='edit-movie-title'>Edit Movie</h3>
           <input
             type="text"
             placeholder="Movie Name"

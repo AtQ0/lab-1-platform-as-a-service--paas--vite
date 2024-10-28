@@ -115,6 +115,10 @@ h2 {
   color: black;
 }
 
+.edit-movie-title {
+  margin-top: 20px;
+}
+
 .add-movie {
   display: flex;
   flex-direction: column;
