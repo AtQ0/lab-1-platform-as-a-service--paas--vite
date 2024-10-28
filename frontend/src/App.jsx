@@ -2,32 +2,33 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-
-  const [movieInfo, setMovieInfo] = useState(''); // State to store movie information
+  const [movieInfo, setMovieInfo] = useState([]); // State to store movie information as an array
 
   useEffect(() => {
     fetch('/api')
       .then((response) => response.json())
       .then((result) => {
-        // Construct a string that includes each movie's name and year
-        const movieInfo = result
-          .map(movie => `${movie.name} (Year: ${movie.year})`)
-          .join(', ');
-
-        setMovieInfo(movieInfo); // Update the state with movieInfo
+        // Map each movie to an object with name and year for individual rendering
+        setMovieInfo(result);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
-        setMovieInfo('Failed to fetch data');
+        setMovieInfo([{ name: 'Failed to fetch data', year: '' }]);
       });
   }, []);
 
   return (
     <>
-      {/* Display movie info here */}
+      {/* Display each movie on a new line */}
       <div className="movie-info">
         <h2>Movies</h2>
-        <p>{movieInfo || 'Loading...'}</p>
+        {movieInfo.length > 0 ? (
+          movieInfo.map((movie, index) => (
+            <p key={index}>{movie.name} (Year: {movie.year})</p>
+          ))
+        ) : (
+          <p>Loading...</p>
+        )}
       </div>
     </>
   );
