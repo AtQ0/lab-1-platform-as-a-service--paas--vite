@@ -88,9 +88,12 @@ app.delete('/api/:id', async (request, response) => {
             return response.status(404).json({ error: 'Movie not found' });
         }
 
-        // Reset the sequence to the max ID + 1
+        // Reset the sequence to the maximum ID in the movies table
+        const { rows } = await client.query('SELECT MAX(id) AS max_id FROM movies');
+        const maxId = rows[0].max_id || 0; // if there are no movies, max_id will be null
         await client.query(
-            'SELECT setval(pg_get_serial_sequence(\'movies\', \'id\'), COALESCE(MAX(id), 0) + 1) FROM movies'
+            'SELECT setval(pg_get_serial_sequence(\'movies\', \'id\'), $1)',
+            [maxId]
         );
 
         response.status(204).send(); // No content to send back
