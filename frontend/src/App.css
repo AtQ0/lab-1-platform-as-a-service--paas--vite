@@ -106,9 +106,11 @@
   right: 5px;
   background: none;
   border: none;
+  border: 1px solid black;
   color: black;
   font-size: 1em;
   cursor: pointer;
+  padding: 0;
 }
 
 h2 {
@@ -116,7 +118,8 @@ h2 {
 }
 
 .edit-movie-title {
-  margin-top: 20px;
+  margin-top: 30px;
+  color: black;
 }
 
 .add-movie {
