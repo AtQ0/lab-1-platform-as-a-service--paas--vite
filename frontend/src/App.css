@@ -1,42 +1,32 @@
 .movie-info {
   background-color: lightblue;
-  /* Light blue background */
   padding: 20px;
   border-radius: 8px;
   margin: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Light shadow */
 }
 
 .movie-item {
   display: flex;
-  /* Use flexbox for alignment */
   justify-content: space-between;
-  /* Space between movie details and buttons */
   align-items: center;
-  /* Center vertically */
   padding: 10px;
   border-bottom: 1px solid #ccc;
-  /* Optional: Add a separator between movies */
 }
 
 .movie-details {
   flex-grow: 1;
-  /* Allow details to take available space */
   color: #333;
   font-size: 1.2em;
 }
 
 .movie-actions {
   display: flex;
-  /* Use flexbox for button alignment */
   gap: 10px;
-  /* Space between buttons */
 }
 
 .edit-button {
   background-color: #ffcc00;
-  /* Yellow color for edit button */
   border: none;
   color: white;
   padding: 8px 12px;
@@ -47,7 +37,6 @@
 
 .remove-button {
   background-color: #ff4d4d;
-  /* Red color for remove button */
   border: none;
   color: white;
   padding: 8px 12px;
@@ -58,15 +47,12 @@
 
 .remove-button:hover {
   background-color: #ff1a1a;
-  /* Darker red on hover */
 }
 
 .edit-button:hover {
   background-color: #e6b800;
-  /* Darker yellow on hover */
 }
 
-/* Edit Movie Modal Styles */
 .edit-movie-modal {
   position: fixed;
   top: 50%;
@@ -78,69 +64,72 @@
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  /* Add rounded corners to the modal */
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Center items horizontally */
 }
 
 .edit-movie-modal h2 {
   margin: 0 0 10px;
 }
 
-/* Set the input text color to black */
 .edit-movie-modal input {
   display: block;
   margin: 10px 0;
   padding: 8px;
   width: 100%;
   border: 1px solid #ccc;
-  /* Add a border to the input fields */
   border-radius: 5px;
-  /* Add rounded corners to input fields */
   background-color: #e0f7fa;
-  /* Light blue background for input fields */
   color: black;
-  /* Set input text color to black */
 }
 
 .modal-button {
   margin: 10px 5px;
-  /* Space between buttons */
   padding: 8px 12px;
   border-radius: 5px;
   border: none;
-  /* Remove default border */
   cursor: pointer;
   font-size: 1em;
   background-color: #4db6e4;
-  /* Light blue for buttons */
   color: black;
-  /* Set button text color to black */
 }
 
 .modal-button:hover {
   opacity: 0.9;
-  /* Slightly reduce opacity on hover */
 }
 
-/* Close Button Styles */
 .close-button {
   position: absolute;
-  /* Position relative to the modal */
   top: 5px;
   right: 5px;
   background: none;
   border: none;
   color: black;
-  /* Set close button text color to black */
   font-size: 1em;
   cursor: pointer;
 }
 
-/* Set headings to black */
 h2 {
   color: black;
-  /* Set headings text color to black */
+}
+
+.add-movie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  /* Optional margin for spacing */
+}
+
+.add-movie h2 {
+  margin-bottom: 10px;
+  /* Optional margin for spacing below the headline */
+}
+
+.add-movie input {
+  width: 300px;
+  /* Fixed width for input fields */
+  margin: 5px 0;
+  /* Margin between input fields */
 }
