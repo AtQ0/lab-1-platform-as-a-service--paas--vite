@@ -31,7 +31,7 @@ app.get('/api', async (request, response) => {
     }
 });
 
-// POST route to add a new movie
+// POST route to add a new movie (on the same `/api` endpoint)
 app.post('/api', async (request, response) => {
     const { name, year } = request.body;
 
@@ -51,18 +51,44 @@ app.post('/api', async (request, response) => {
     }
 });
 
-// DELETE route to remove a movie by ID
-app.delete('/api/:id', async (request, response) => {
-    const movieId = request.params.id;
+// PUT route to update an existing movie by ID
+app.put('/api/:id', async (request, response) => {
+    const { id } = request.params;
+    const { name, year } = request.body;
+
+    if (!name || !year) {
+        return response.status(400).json({ error: 'Movie name and year are required' });
+    }
 
     try {
-        const result = await client.query('DELETE FROM movies WHERE id = $1 RETURNING *', [movieId]);
+        const { rows } = await client.query(
+            'UPDATE movies SET name = $1, year = $2 WHERE id = $3 RETURNING *',
+            [name, year, id]
+        );
 
-        if (result.rowCount === 0) {
+        if (rows.length === 0) {
             return response.status(404).json({ error: 'Movie not found' });
         }
 
-        response.status(204).send(); // Send a 204 No Content response on successful deletion
+        response.json(rows[0]); // Send back the updated movie
+    } catch (error) {
+        console.error('Error updating movie:', error);
+        response.status(500).json({ error: 'Failed to update movie' });
+    }
+});
+
+// DELETE route to remove a movie by ID
+app.delete('/api/:id', async (request, response) => {
+    const { id } = request.params;
+
+    try {
+        const { rowCount } = await client.query('DELETE FROM movies WHERE id = $1', [id]);
+
+        if (rowCount === 0) {
+            return response.status(404).json({ error: 'Movie not found' });
+        }
+
+        response.status(204).send(); // No content to send back
     } catch (error) {
         console.error('Error deleting movie:', error);
         response.status(500).json({ error: 'Failed to delete movie' });
