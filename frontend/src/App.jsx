@@ -24,7 +24,7 @@ function App() {
       const newMovie = { name: newMovieName, year: newMovieYear };
 
       // Send a POST request to add the new movie to the backend
-      fetch('/api/add-movie', {
+      fetch('/api', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
