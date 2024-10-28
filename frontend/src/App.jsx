@@ -6,6 +6,8 @@ function App() {
   const [newMovieName, setNewMovieName] = useState(''); // State for new movie name
   const [newMovieYear, setNewMovieYear] = useState(''); // State for new movie year
   const [editMovieId, setEditMovieId] = useState(null); // State for the movie currently being edited
+  const [editMovieName, setEditMovieName] = useState(''); // State for the name of the movie being edited
+  const [editMovieYear, setEditMovieYear] = useState(''); // State for the year of the movie being edited
 
   useEffect(() => {
     fetch('/api')
@@ -50,14 +52,14 @@ function App() {
   // Function to edit a movie
   const editMovie = (movie) => {
     setEditMovieId(movie.id); // Set the ID of the movie to be edited
-    setNewMovieName(movie.name); // Set the input field for name
-    setNewMovieYear(movie.year); // Set the input field for year
+    setEditMovieName(movie.name); // Set the input field for name
+    setEditMovieYear(movie.year); // Set the input field for year
   };
 
   // Function to save the edited movie
   const saveEditedMovie = () => {
-    if (newMovieName && newMovieYear && editMovieId) {
-      const updatedMovie = { name: newMovieName, year: newMovieYear };
+    if (editMovieName && editMovieYear && editMovieId) {
+      const updatedMovie = { name: editMovieName, year: editMovieYear };
 
       fetch(`/api/${editMovieId}`, {
         method: 'PUT',
@@ -70,8 +72,8 @@ function App() {
         .then((updatedMovie) => {
           // Update the movie list with the edited movie
           setMovieInfo(movieInfo.map(movie => (movie.id === editMovieId ? updatedMovie : movie)));
-          setNewMovieName(''); // Clear input fields
-          setNewMovieYear('');
+          setEditMovieName(''); // Clear edit input fields
+          setEditMovieYear('');
           setEditMovieId(null); // Clear edit mode
         })
         .catch((error) => {
@@ -147,14 +149,14 @@ function App() {
           <input
             type="text"
             placeholder="Movie Name"
-            value={newMovieName}
-            onChange={(e) => setNewMovieName(e.target.value)}
+            value={editMovieName}
+            onChange={(e) => setEditMovieName(e.target.value)} // Update the edit movie name
           />
           <input
             type="number"
             placeholder="Year"
-            value={newMovieYear}
-            onChange={(e) => setNewMovieYear(e.target.value)}
+            value={editMovieYear}
+            onChange={(e) => setEditMovieYear(e.target.value)} // Update the edit movie year
           />
           <button className="modal-button" onClick={saveEditedMovie}>Save Changes</button>
           <button className="modal-button" onClick={() => setEditMovieId(null)}>Cancel</button>

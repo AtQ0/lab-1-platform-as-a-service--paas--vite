@@ -113,8 +113,7 @@
   font-size: 1em;
   background-color: #4db6e4;
   /* Light blue for buttons */
-  color: white;
-  /* Text color */
+  color: black;
 }
 
 .modal-button:hover {
@@ -126,16 +125,11 @@
 .close-button {
   position: absolute;
   /* Position relative to the modal */
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   background: none;
-  /* Remove background */
   border: none;
-  /* Remove border */
-  color: #ff4d4d;
-  /* Color for close button */
-  font-size: 1.5em;
-  /* Larger font for visibility */
+  color: black;
+  font-size: 1em;
   cursor: pointer;
-  /* Pointer cursor on hover */
 }
