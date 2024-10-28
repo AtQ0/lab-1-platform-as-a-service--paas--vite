@@ -35,4 +35,4 @@ Många monitoreringsverktyg erbjuder funktioner som:
 
 Exempel på verktyg för övervakning:
 -Pingdom: Ett verktyg som spårar tillgänglighet och responstid, skickar aviseringar om tjänster går ner.
--Scout APM: Fokuserar på applikationsprestanda och hjälper till att identifiera och åtgärda kodproblem.
+-Scout APM: Fokuserar på applikationsprestanda och hjälper till att identifiera och åtgärda kodproblem..
