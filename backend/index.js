@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 const express = require('express');
 const path = require('path');
 const { Client } = require('pg');
+const cron = require('node-cron');
 
 const app = express();
 
@@ -20,6 +21,32 @@ app.use(express.json());
 // Serve frontend files from the 'dist' folder
 app.use(express.static(path.join(path.resolve(), 'dist')));
 
+// Default movies to reset the table with
+const defaultMovies = [
+    { name: 'Dancing with the wolves', year: 1994 },
+    { name: 'Demolition Man', year: 1997 },
+    { name: 'Casino', year: 1997 },
+];
+
+// Function to reset the movies table
+const resetMoviesTable = async () => {
+    try {
+        await client.query('DELETE FROM movies'); // Clear existing data
+        for (const movie of defaultMovies) {
+            await client.query(
+                'INSERT INTO movies (name, year) VALUES ($1, $2)',
+                [movie.name, movie.year]
+            );
+        }
+        console.log('Movies table reset to default values.');
+    } catch (error) {
+        console.error('Error resetting movies table:', error);
+    }
+};
+
+// Schedule the reset to run every 5 minutes
+cron.schedule('*/5 * * * *', resetMoviesTable);
+
 // GET route to fetch all movies
 app.get('/api', async (request, response) => {
     try {
@@ -31,7 +58,7 @@ app.get('/api', async (request, response) => {
     }
 });
 
-// POST route to add a new movie (on the same `/api` endpoint)
+// POST route to add a new movie
 app.post('/api', async (request, response) => {
     const { name, year } = request.body;
 
@@ -88,14 +115,6 @@ app.delete('/api/:id', async (request, response) => {
             return response.status(404).json({ error: 'Movie not found' });
         }
 
-        // Reset the sequence to the maximum ID in the movies table
-        const { rows } = await client.query('SELECT MAX(id) AS max_id FROM movies');
-        const maxId = rows[0].max_id || 0; // if there are no movies, max_id will be null
-        await client.query(
-            'SELECT setval(pg_get_serial_sequence(\'movies\', \'id\'), $1)',
-            [maxId]
-        );
-
         response.status(204).send(); // No content to send back
     } catch (error) {
         console.error('Error deleting movie:', error);
@@ -103,6 +122,7 @@ app.delete('/api/:id', async (request, response) => {
     }
 });
 
+// Start the server
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
