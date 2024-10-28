@@ -88,6 +88,11 @@ app.delete('/api/:id', async (request, response) => {
             return response.status(404).json({ error: 'Movie not found' });
         }
 
+        // Reset the sequence to the max ID + 1
+        await client.query(
+            'SELECT setval(pg_get_serial_sequence(\'movies\', \'id\'), COALESCE(MAX(id), 0) + 1) FROM movies'
+        );
+
         response.status(204).send(); // No content to send back
     } catch (error) {
         console.error('Error deleting movie:', error);
