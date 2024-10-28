@@ -1,160 +1,110 @@
-import { useState, useEffect } from 'react';
-import './App.css';
+const dotenv = require('dotenv');
+const express = require('express');
+const path = require('path');
+const { Client } = require('pg');
 
-function App() {
-    const [movieInfo, setMovieInfo] = useState([]);
-    const [newMovieName, setNewMovieName] = useState('');
-    const [newMovieYear, setNewMovieYear] = useState('');
-    const [editMovieId, setEditMovieId] = useState(null);
-    const [editMovieName, setEditMovieName] = useState('');
-    const [editMovieYear, setEditMovieYear] = useState('');
+const app = express();
 
-    useEffect(() => {
-        fetch('/api')
-            .then((response) => response.json())
-            .then((result) => {
-                setMovieInfo(result);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                setMovieInfo([{ name: 'Failed to fetch data', year: '' }]);
-            });
-    }, []);
+dotenv.config();
 
-    const addNewMovie = () => {
-        if (newMovieName && newMovieYear) {
-            const newMovie = { name: newMovieName, year: newMovieYear };
+// Connect to PostgreSQL database via PGURI in .env
+const client = new Client({
+    connectionString: process.env.PGURI,
+});
 
-            fetch('/api', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newMovie),
-            })
-                .then((response) => response.json())
-                .then((addedMovie) => {
-                    setMovieInfo([...movieInfo, addedMovie]);
-                    setNewMovieName('');
-                    setNewMovieYear('');
-                })
-                .catch((error) => {
-                    console.error('Error adding movie:', error);
-                    alert('Failed to add movie.');
-                });
-        } else {
-            alert('Please enter both the movie name and year.');
+client.connect();
+
+// Middleware to parse JSON data
+app.use(express.json());
+
+// Serve frontend files from the 'dist' folder
+app.use(express.static(path.join(path.resolve(), 'dist')));
+
+// GET route to fetch all movies
+app.get('/api', async (request, response) => {
+    try {
+        const { rows } = await client.query('SELECT * FROM movies');
+        response.json(rows);
+    } catch (error) {
+        console.error('Error fetching movies:', error);
+        response.status(500).json({ error: 'Failed to fetch movies' });
+    }
+});
+
+// POST route to add a new movie (on the same `/api` endpoint)
+app.post('/api', async (request, response) => {
+    const { name, year } = request.body;
+
+    if (!name || !year) {
+        return response.status(400).json({ error: 'Movie name and year are required' });
+    }
+
+    try {
+        const { rows } = await client.query(
+            'INSERT INTO movies (name, year) VALUES ($1, $2) RETURNING *',
+            [name, year]
+        );
+        response.status(201).json(rows[0]); // Send back the newly added movie
+    } catch (error) {
+        console.error('Error adding movie:', error);
+        response.status(500).json({ error: 'Failed to add movie' });
+    }
+});
+
+// PUT route to update an existing movie by ID
+app.put('/api/:id', async (request, response) => {
+    const { id } = request.params;
+    const { name, year } = request.body;
+
+    if (!name || !year) {
+        return response.status(400).json({ error: 'Movie name and year are required' });
+    }
+
+    try {
+        const { rows } = await client.query(
+            'UPDATE movies SET name = $1, year = $2 WHERE id = $3 RETURNING *',
+            [name, year, id]
+        );
+
+        if (rows.length === 0) {
+            return response.status(404).json({ error: 'Movie not found' });
         }
-    };
 
-    const editMovie = (movie) => {
-        setEditMovieId(movie.id);
-        setEditMovieName(movie.name);
-        setEditMovieYear(movie.year);
-    };
+        response.json(rows[0]); // Send back the updated movie
+    } catch (error) {
+        console.error('Error updating movie:', error);
+        response.status(500).json({ error: 'Failed to update movie' });
+    }
+});
 
-    const saveEditedMovie = () => {
-        if (editMovieName && editMovieYear && editMovieId) {
-            const updatedMovie = { name: editMovieName, year: editMovieYear };
+// DELETE route to remove a movie by ID
+app.delete('/api/:id', async (request, response) => {
+    const { id } = request.params;
 
-            fetch(`/api/${editMovieId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedMovie),
-            })
-                .then((response) => response.json())
-                .then((updatedMovie) => {
-                    setMovieInfo(movieInfo.map(movie => (movie.id === editMovieId ? updatedMovie : movie)));
-                    setEditMovieName('');
-                    setEditMovieYear('');
-                    setEditMovieId(null);
-                })
-                .catch((error) => {
-                    console.error('Error updating movie:', error);
-                    alert('Failed to update movie.');
-                });
-        } else {
-            alert('Please enter both the movie name and year.');
+    try {
+        const { rowCount } = await client.query('DELETE FROM movies WHERE id = $1', [id]);
+
+        if (rowCount === 0) {
+            return response.status(404).json({ error: 'Movie not found' });
         }
-    };
 
-    const deleteMovie = (id) => {
-        fetch(`/api/${id}`, {
-            method: 'DELETE',
-        })
-            .then((response) => {
-                if (response.ok) {
-                    setMovieInfo(movieInfo.filter(movie => movie.id !== id));
-                } else {
-                    alert('Failed to delete movie.');
-                }
-            })
-            .catch((error) => {
-                console.error('Error deleting movie:', error);
-                alert('Failed to delete movie.');
-            });
-    };
+        // Reset the sequence to the maximum ID in the movies table
+        const { rows } = await client.query('SELECT MAX(id) AS max_id FROM movies');
+        const maxId = rows[0].max_id || 0; // if there are no movies, max_id will be null
+        await client.query(
+            'SELECT setval(pg_get_serial_sequence(\'movies\', \'id\'), $1)',
+            [maxId]
+        );
 
-    return (
-        <>
-            <div className="movie-info">
-                <h2>Movies</h2>
-                {movieInfo.length > 0 ? (
-                    movieInfo.map((movie) => (
-                        <div key={movie.id} className="movie-item">
-                            <p className="movie-details">{movie.name} (Year: {movie.year})</p>
-                            <div className="movie-actions">
-                                <button className="edit-button" onClick={() => editMovie(movie)}>Edit</button>
-                                <button className="remove-button" onClick={() => deleteMovie(movie.id)}>Remove</button>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>Loading...</p>
-                )}
-            </div>
+        response.status(204).send(); // No content to send back
+    } catch (error) {
+        console.error('Error deleting movie:', error);
+        response.status(500).json({ error: 'Failed to delete movie' });
+    }
+});
 
-            <div className="add-movie">
-                <h2>Add New Movie</h2>
-                <input
-                    type="text"
-                    placeholder="Movie Name"
-                    value={newMovieName}
-                    onChange={(e) => setNewMovieName(e.target.value)}
-                />
-                <input
-                    type="number"
-                    placeholder="Year"
-                    value={newMovieYear}
-                    onChange={(e) => setNewMovieYear(e.target.value)}
-                />
-                <button onClick={addNewMovie}>Add Movie</button>
-            </div>
+const port = process.env.PORT || 3000;
 
-            {editMovieId && (
-                <div className="edit-movie-modal">
-                    <button className="close-button" onClick={() => setEditMovieId(null)}>X</button>
-                    <h2>Edit Movie</h2>
-                    <input
-                        type="text"
-                        placeholder="Movie Name"
-                        value={editMovieName}
-                        onChange={(e) => setEditMovieName(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        placeholder="Year"
-                        value={editMovieYear}
-                        onChange={(e) => setEditMovieYear(e.target.value)}
-                    />
-                    <button className="modal-button" onClick={saveEditedMovie}>Save Changes</button>
-                    <button className="modal-button" onClick={() => setEditMovieId(null)}>Cancel</button>
-                </div>
-            )}
-        </>
-    );
-}
-
-export default App;
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
