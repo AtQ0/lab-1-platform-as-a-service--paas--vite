@@ -72,8 +72,11 @@ function App() {
         {movieInfo.length > 0 ? (
           movieInfo.map((movie) => (
             <div key={movie.id} className="movie-item">
-              <p>{movie.name} (Year: {movie.year})</p>
-              <button onClick={() => deleteMovie(movie.id)}>Delete</button>
+              <p className="movie-details">{movie.name} (Year: {movie.year})</p>
+              <div className="movie-actions">
+                <button className="edit-button">Edit</button>
+                <button className="remove-button" onClick={() => deleteMovie(movie.id)}>Remove</button>
+              </div>
             </div>
           ))
         ) : (
