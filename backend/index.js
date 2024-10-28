@@ -31,7 +31,7 @@ app.get('/api', async (request, response) => {
     }
 });
 
-// POST route to add a new movie (on the same `/api` endpoint)
+// POST route to add a new movie
 app.post('/api', async (request, response) => {
     const { name, year } = request.body;
 
@@ -48,6 +48,24 @@ app.post('/api', async (request, response) => {
     } catch (error) {
         console.error('Error adding movie:', error);
         response.status(500).json({ error: 'Failed to add movie' });
+    }
+});
+
+// DELETE route to remove a movie by ID
+app.delete('/api/:id', async (request, response) => {
+    const movieId = request.params.id;
+
+    try {
+        const result = await client.query('DELETE FROM movies WHERE id = $1 RETURNING *', [movieId]);
+
+        if (result.rowCount === 0) {
+            return response.status(404).json({ error: 'Movie not found' });
+        }
+
+        response.status(204).send(); // Send a 204 No Content response on successful deletion
+    } catch (error) {
+        console.error('Error deleting movie:', error);
+        response.status(500).json({ error: 'Failed to delete movie' });
     }
 });
 

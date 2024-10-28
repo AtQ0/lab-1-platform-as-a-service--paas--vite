@@ -46,13 +46,35 @@ function App() {
     }
   };
 
+  // Function to delete a movie by ID
+  const deleteMovie = (id) => {
+    fetch(`/api/${id}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Update the movie list after successful deletion
+          setMovieInfo(movieInfo.filter(movie => movie.id !== id));
+        } else {
+          alert('Failed to delete movie.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error deleting movie:', error);
+        alert('Failed to delete movie.');
+      });
+  };
+
   return (
     <>
       <div className="movie-info">
         <h2>Movies</h2>
         {movieInfo.length > 0 ? (
-          movieInfo.map((movie, index) => (
-            <p key={index}>{movie.name} (Year: {movie.year})</p>
+          movieInfo.map((movie) => (
+            <div key={movie.id} className="movie-item">
+              <p>{movie.name} (Year: {movie.year})</p>
+              <button onClick={() => deleteMovie(movie.id)}>Delete</button>
+            </div>
           ))
         ) : (
           <p>Loading...</p>
