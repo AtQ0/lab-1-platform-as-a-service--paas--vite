@@ -142,6 +142,7 @@ function App() {
       {/* Edit Movie Modal */}
       {editMovieId && (
         <div className="edit-movie-modal">
+          <button className="close-button" onClick={() => setEditMovieId(null)}>X</button>
           <h2>Edit Movie</h2>
           <input
             type="text"
@@ -155,8 +156,8 @@ function App() {
             value={newMovieYear}
             onChange={(e) => setNewMovieYear(e.target.value)}
           />
-          <button onClick={saveEditedMovie}>Save Changes</button>
-          <button onClick={() => setEditMovieId(null)}>Cancel</button>
+          <button className="modal-button" onClick={saveEditedMovie}>Save Changes</button>
+          <button className="modal-button" onClick={() => setEditMovieId(null)}>Cancel</button>
         </div>
       )}
     </>
