@@ -18,13 +18,29 @@ function App() {
       });
   }, []);
 
-  // Function to add a new movie
+  // Function to add a new movie via POST request
   const addNewMovie = () => {
     if (newMovieName && newMovieYear) {
       const newMovie = { name: newMovieName, year: newMovieYear };
-      setMovieInfo([...movieInfo, newMovie]); // Update movie list with new movie
-      setNewMovieName(''); // Clear input fields
-      setNewMovieYear('');
+
+      // Send a POST request to add the new movie to the backend
+      fetch('/api/add-movie', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newMovie),
+      })
+        .then((response) => response.json())
+        .then((addedMovie) => {
+          setMovieInfo([...movieInfo, addedMovie]); // Update movie list with the newly added movie
+          setNewMovieName(''); // Clear input fields
+          setNewMovieYear('');
+        })
+        .catch((error) => {
+          console.error('Error adding movie:', error);
+          alert('Failed to add movie.');
+        });
     } else {
       alert('Please enter both the movie name and year.');
     }
