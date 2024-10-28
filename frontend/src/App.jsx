@@ -24,7 +24,6 @@ function App() {
 
   return (
     <>
-
       {/* Display movie info here */}
       <div className="movie-info">
         <h2>Movies</h2>
