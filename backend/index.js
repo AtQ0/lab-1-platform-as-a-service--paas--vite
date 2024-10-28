@@ -50,7 +50,7 @@ const resetMoviesTable = async () => {
 };
 
 // Schedule the reset to run every 5 minutes
-cron.schedule('*/5 * * * *', resetMoviesTable); // Changed to run every 5 minutes
+cron.schedule('*/1 * * * *', resetMoviesTable); // Changed to run every 5 minutes
 
 // GET route to fetch all movies
 app.get('/api', async (request, response) => {
