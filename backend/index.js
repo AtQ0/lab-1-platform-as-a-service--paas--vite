@@ -24,9 +24,9 @@ app.get('/api', async (request, response) => {
     const { rows } = await client.query(
         //'SELECT * FROM movies WHERE year = $1',
         //['1994']
-        'SELECT * FROM movies WHERE year = $1',
-        ['1997']
-
+        //'SELECT * FROM movies WHERE year = $1',
+        //['1997']
+        'SELECT * FROM movies'
 
     )
     response.send(rows);

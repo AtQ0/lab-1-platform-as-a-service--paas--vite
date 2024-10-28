@@ -47,7 +47,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
 
-      {/* Display the movie info here */}
+      {/* Display movie info here */}
       <div className="movie-info">
         <h2>Movies</h2>
         <p>{movieInfo || 'Loading...'}</p>
