@@ -78,11 +78,9 @@
   display: block;
   margin: 10px 0;
   padding: 8px;
-  padding-top: 5px;
-  padding-bottom: 50px;
   width: 100%;
   border: 1px solid #ccc;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #e0f7fa;
   color: black;
 }
@@ -139,6 +137,9 @@ h2 {
 }
 
 .add-movie input {
-  width: 300px;
+  width: 250px;
   margin: 5px 0;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border-radius: 5px;
 }
