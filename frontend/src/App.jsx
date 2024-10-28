@@ -11,11 +11,11 @@ function App() {
       .then((response) => response.json())
       .then((result) => {
         // Construct a string that includes each city's name and population
-        const cityInfo = result
-          .map(city => `${city.name} (Population: ${city.population})`)
+        const movieInfo = result
+          .map(movie => `${movie.name} (Year: ${movie.year})`)
           .join(', ');
 
-        alert(`Cities: ${cityInfo}`);
+        alert(`Movies: ${movieInfo}`);
       })
       .catch(error => {
         console.error('Error fetching data:', error);

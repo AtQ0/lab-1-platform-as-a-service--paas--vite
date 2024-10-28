@@ -22,10 +22,10 @@ app.use(express.static(path.join(path.resolve(), 'dist')));
 //Backend
 app.get('/api', async (request, response) => {
     const { rows } = await client.query(
-        //'SELECT * FROM cities WHERE name = $1',
-        //['Stockholm']
-        'SELECT * FROM cities WHERE population > $1',
-        ['400000']
+        //'SELECT * FROM movies WHERE year = $1',
+        //['1994']
+        'SELECT * FROM movies WHERE year = $1',
+        ['1997']
 
 
     )
