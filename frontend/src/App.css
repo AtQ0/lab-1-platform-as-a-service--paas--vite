@@ -89,6 +89,7 @@
   margin: 0 0 10px;
 }
 
+/* Set the input text color to black */
 .edit-movie-modal input {
   display: block;
   margin: 10px 0;
@@ -100,6 +101,8 @@
   /* Add rounded corners to input fields */
   background-color: #e0f7fa;
   /* Light blue background for input fields */
+  color: black;
+  /* Set input text color to black */
 }
 
 .modal-button {
@@ -114,6 +117,7 @@
   background-color: #4db6e4;
   /* Light blue for buttons */
   color: black;
+  /* Set button text color to black */
 }
 
 .modal-button:hover {
@@ -130,6 +134,13 @@
   background: none;
   border: none;
   color: black;
+  /* Set close button text color to black */
   font-size: 1em;
   cursor: pointer;
+}
+
+/* Set headings to black */
+h2 {
+  color: black;
+  /* Set headings text color to black */
 }
